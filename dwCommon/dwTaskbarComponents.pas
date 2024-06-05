@@ -1,4 +1,5 @@
 unit dwTaskbarComponents;
+{$MODE DELPHI}
 
 interface
 
@@ -20,7 +21,6 @@ type
     function GetTaskBarEntryHandle: THandle;
 
   protected
-    procedure CreateParams(var Params: TCreateParams); override;
     property In32BitMode: Boolean read FIn32BitMode;
     property TaskbarList: ITaskbarList read FTaskbarList;
     property TaskbarList2: ITaskbarList2 read FTaskbarList2;
@@ -85,8 +85,13 @@ var
   Obj: IInterface;
 begin
   inherited;
-
-  FIn32BitMode := InitCommonControl(GetComCtrlClass);
+  { ugly workaround for now }
+  {FIn32BitMode := InitCommonControl(GetComCtrlClass);}
+  {$ifdef CPU32}
+  FIn32BitMode := True;
+  {$else}
+  FIn32BitMode := False;
+  {$endif}
 
   Obj := CreateComObject(CLSID_TaskbarList);
   if Obj = nil then
@@ -102,16 +107,6 @@ begin
     FTaskbarList.QueryInterface(CLSID_TaskbarList3, FTaskbarList3);
   end;
 
-end;
-
-procedure TdwTaskbarWinControl.CreateParams(var Params: TCreateParams);
-begin
-  if not In32BitMode then
-    InitCommonControls;
-
-  inherited;
-
-  CreateSubClass(Params, GetComCtrlClassName);
 end;
 
 function TdwTaskbarWinControl.GetTaskBarEntryHandle: THandle;

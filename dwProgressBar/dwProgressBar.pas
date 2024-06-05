@@ -76,7 +76,6 @@ type
     procedure SetMarqueeEnabled(const Value: Boolean);
 
   protected // CodeGear :: ProgressBar
-    procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
 
@@ -150,7 +149,7 @@ procedure Register;
 implementation
 
 uses
-  Consts,
+  rtlconsts,
   Themes, CommCtrl, Windows,
   dwTaskbarList;
 
@@ -187,7 +186,7 @@ begin
   FMsgUpdateTaskbar := RegisterWindowMessage('dw.Control.Update.Taskbar');
 end;
 
-procedure TdwProgressBar.CreateParams(var Params: TCreateParams);
+{ procedure TdwProgressBar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
 
@@ -202,7 +201,7 @@ begin
     if FSmoothReverse and ThemeServices.ThemesEnabled and CheckWin32Version(6, 0) then
       Style := Style or PBS_SMOOTHREVERSE;
   end;
-end;
+end; }
 
 procedure TdwProgressBar.CreateWnd;
 begin
@@ -362,7 +361,7 @@ begin
   if FOrientation <> Value then
   begin
     FOrientation := Value;
-    RecreateWnd;
+    RecreateWnd(Self);
   end;
 end;
 
@@ -416,7 +415,7 @@ begin
   FProgressBarState := Value;
   if DoRecreate then
   begin
-    RecreateWnd;
+    RecreateWnd(Self);
   end
   else
   begin
@@ -440,7 +439,7 @@ begin
   if FSmooth <> Value then
   begin
     FSmooth := Value;
-    RecreateWnd;
+    RecreateWnd(Self);
   end;
 end;
 
@@ -449,7 +448,7 @@ begin
   if FSmoothReverse <> Value then
   begin
     FSmoothReverse := Value;
-    RecreateWnd;
+    RecreateWnd(Self);
   end;
 end;
 
